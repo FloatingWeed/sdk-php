@@ -254,6 +254,26 @@ class neApiClient {
 		return self::NE_SERVER_HOST;
 	}
 
+	public function getAccessToken( $uid, $state ) {
+		$params   = array(
+			'uid'           => $uid,
+			'state'         => $state,
+			'client_id'     => $this->_client_id,
+			'client_secret' => $this->_client_secret
+		);
+		$response = $this->post( static::getApiServerHost() . self::PATH_OAUTH, $params );
+		if ( ! $this->responseCheck( $response ) ) {
+			return ( $response );
+		}
+
+		$this->_access_token = $response['access_token'];
+		if ( isset( $response['refresh_token'] ) ) {
+			$this->_refresh_token = $response['refresh_token'];
+		}
+
+		return ( $response );
+	}
+
 	/**
 	* メンバ変数にuidとstateを設定します。
 	*
